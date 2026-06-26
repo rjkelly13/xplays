@@ -1,0 +1,21 @@
+GAME1,Eagles,Hurts to Smith for 35 yards,35,pass,1,12:34
+GAME1,Eagles,Barkley run up the middle for 3 yards,3,run,1,12:10
+GAME1,Eagles,Barkley run to the left for -2 yards,-2,run,1,11:34
+GAME1,Eagles,Hurts to Brown incomplete,0,pass,1,11:01
+GAME1,Eagles,Mann punted to 4 yard line fair catch,40,punt,1,10:45
+GAME1,Cowboys,Prescott to Pickens for 20 yards,20,pass,1,10:23
+GAME1,Cowboys,Prescott to Ferguson for 8 yards,8,pass,1,9:58
+GAME1,Cowboys,Prescott to Lamb incomplete,0,pass,1,9:47
+GAME1,Cowboys,Williams run up the middle for 3 yards,3,run,1,9:35
+GAME1,Cowboys,Williams run to the right for 21 yards,21,run,1,8:55
+GAME1,Cowboys,Prescott to Pickens for 44 yards TOUCHDOWN,44,pass,1,8:27
+GAME1,Cowboys,Aubrey extra point good,0,kick,1,8:27
+GAME1,Eagles,Aubrey kicks off TOUCHBACK,0,kickoff,1,8:27
+GAME1,Eagles,Barkley run to the left for 9 yards,9,run,1,7:47
+GAME1,Eagles,Hurts to Goedert for 22 yards,22,pass,1,7:24
+GAME1,Eagles,Hurts to Goedert for 12 yards,12,pass,1,6:59
+GAME1,Eagles,Barkley run up to the middle for 0 yards,0,run,1,6:24
+GAME1,Eagles,Hurts to Smith for 8 yards,8,pass,1,6:00
+GAME1,Eagles,Hurts run up the middle for 2 yards,2,run,1,5:30
+GAME1,Eagles,Hurts run to the right for 11 yards,11,run,1,5:12
+GAME1,Eagles,Hurts run up the middle for 1 yard TOUCHDOWN,1,run,1,5:07

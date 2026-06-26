@@ -1,0 +1,8 @@
+Eagles,Philadelphia,Sirianni,11,5900
+Cowboys,Dallas,McCarthy,7,5400
+Commanders,Washington,Quinn,5,5100
+Giants,New York,Daboll,4,4800
+Cardinals,Arizona,Gannon,3,4500
+Seahawks,Seattle,MacDonald,14,6100
+Bears,Chicago,Johnson,11,5300
+Saints,New Orleans,Moore,6,5000
