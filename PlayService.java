@@ -15,6 +15,13 @@ public class PlayService {
         return play.yards >= EXPLOSIVE_THRESHOLD && (play.playType.equals("REC") || play.playType.equals("RUSH")|| play.playType.equals("TD"));
     }
 
+    boolean isOffensive(Play play) {
+        if (play.description.contains(" punts ") || play.description.contains(" kicks ") || play.description.contains("INTERCEPTED"))
+            return false;
+        else
+            return true;
+    }
+
     /**
      * getExplosivePlays
      * @param plays
@@ -24,7 +31,7 @@ public class PlayService {
         List<Play> result = new ArrayList<>();
 
         for (Play p : plays) {
-            if (isExplosive(p))
+            if (isExplosive(p) && isOffensive(p))
                 result.add(p);
         }
 
@@ -43,13 +50,13 @@ public class PlayService {
 
         for (Play p : plays) {
             if (category.equals("PASSING")) {
-                if (p.playType.equals("REC") || (p.playType.equals("TD") && p.player2 != null))
+                if (p.playType.equals("REC"))
                     results.put(p.player1, results.getOrDefault(p.player1, 0) + 1);
             } else if (category.equals("RECEIVING")) {
-                if (p.playType.equals("REC") || (p.playType.equals("TD") && p.player2 != null))
+                if (p.playType.equals("REC"))
                     results.put(p.player2, results.getOrDefault(p.player2, 0) + 1);
             } else if (category.equals("RUSHING")) {
-                if (p.playType.equals("RUSH") || (p.playType.equals("TD") && p.player2 == null))
+                if (p.playType.equals("RUSH"))
                     results.put(p.player1, results.getOrDefault(p.player1, 0) + 1);
             }
         }

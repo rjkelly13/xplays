@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.regex.*;
 import java.net.URI;
 import java.net.http.*;
 import java.time.Duration;
@@ -29,7 +30,6 @@ public class EspnParser {
             JsonNode drive_plays = drive.path("plays");
 
             for (JsonNode p: drive_plays) {
-
                 String team = teams.get(p.at("/start/team/id").asInt());
                 String description = p.path("text").toString();
                 int yards = p.path("statYardage").asInt();
@@ -37,6 +37,7 @@ public class EspnParser {
                 int quarter = p.path("period").path("number").asInt(0);
                 String time = p.path("clock").path("displayValue").toString();
                 String[] players = playerParser(description, playType);
+                playType = determinePlayType(playType, description);
 
                 plays.add(new Play(gameId, team, description, players[0], players[1], yards, playType, quarter, time));
 
@@ -54,27 +55,11 @@ public class EspnParser {
 
         JsonNode root = mapper.readTree(weekData);
 
-        Map<Integer, String> teams = teamParser(root);
+        JsonNode games = root.at("/events");
 
-        JsonNode drives = root.at("/drives/previous");
-
-        /*for (JsonNode drive : drives) {
-            JsonNode drive_plays = drive.path("plays");
-
-            for (JsonNode p: drive_plays) {
-
-                String team = teams.get(p.at("/start/team/id").asInt());
-                String description = p.path("text").toString();
-                int yards = p.path("statYardage").asInt();
-                String playType = p.path("type").path("abbreviation").asText("");
-                int quarter = p.path("period").path("number").asInt(0);
-                String time = p.path("clock").path("displayValue").toString();
-                String[] players = playerParser(description, playType);
-
-                plays.add(new Play(gameId, team, description, players[0], players[1], yards, playType, quarter, time));
-
-            }
-        }*/
+        for (JsonNode game: games) {
+            plays.addAll(parseGameData(game.path("id").asInt()));
+        }
 
         return plays;
     }
@@ -130,31 +115,66 @@ public class EspnParser {
     String[] playerParser(String desc, String playType) {
         String[] players = new String[2];
         String p = desc;
-        p = p.replaceAll("^\"?\\([^)]*\\)\\s*", "");
-        String[] sentences = p.split("\\.\\s+");
-        for (String s: sentences) {
-            if (s.contains(" to ") || s.contains(" for ")) {
-                p = s;
-                break;
-            }
-        }
+        p = p.replaceAll("^?\\([^)]*\\)\\s*", "");
 
-        if (playType.equals("RUSH")) {
-            players[0] = p.split(" ")[0];
-            players[1] = null;
-        } else if (playType.equals("REC")) {
-            players[0] = p.split(" ")[0];
-            players[1] = p.split(" to ")[1];
-        } else if (playType.equals("TD")) {
-            if (!p.contains(" to ")) {
-                players[0] = p.split(" ")[0];
-                players[1] = null;
+        List<String> players2 = new ArrayList<>();
+
+        Pattern pattern = Pattern.compile("[A-Z][a-z]?\\.[A-Za-z.-]+");
+        Matcher matcher = pattern.matcher(p);
+
+        while (matcher.find()) {
+
+            String player = matcher.group();
+        
+            int end = matcher.end();
+        
+            // Skip spaces
+            while (end < p.length() && Character.isWhitespace(p.charAt(end))) {
+                end++;
+            }
+        
+            // If the next word starts with a capital letter...
+            if (end < p.length() && Character.isUpperCase(p.charAt(end))) {
+        
+                int wordEnd = end;
+        
+                while (wordEnd < p.length()
+                        && Character.isLetter(p.charAt(wordEnd))) {
+                    wordEnd++;
+                }
+        
+                player += " " + p.substring(end, wordEnd);
+            }
+        
+            players2.add(player);
+        }
+        
+        if (!players2.isEmpty()) {
+            if (p.contains("reported")) {
+                players[0] = players2.get(1);
             } else {
-                players[0] = p.split(" ")[0];
-                players[1] = p.split(" to ")[1].split(" ")[0];
+                players[0] = players2.get(0);
+            }
+
+            if (playType.equals("RUSH") || (playType.equals("TD") && !p.contains(" pass ") && !p.contains(" punts "))) {
+                players[1] = null;
+            } else if (playType.equals("REC") || (playType.equals("TD") && p.contains(" pass ") && !p.contains(" punts " ))) {
+                players[1] = p.contains("reported") ? players2.get(2) : players2.get(1);
             }
         }
 
         return players;
+    }
+
+    String determinePlayType(String playType, String desc) {
+        if (playType.equals("TD")) {
+            if (!desc.contains(" punts ") && !desc.contains(" kicks ")) {
+                if (desc.contains(" pass "))
+                    return "REC";
+                else
+                    return "RUSH";   
+            }
+        }
+        return playType;
     }
 }

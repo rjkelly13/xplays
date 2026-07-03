@@ -66,15 +66,15 @@ public class Main {
     public static void main(String[] args) throws Exception {
         EspnParser parser = new EspnParser();
 
+        //List<Play> plays = parser.parseWeekData(2025, 16);
 
-
-        /*List<Play> plays = parser.parseGameData(401772612);
+        List<Play> plays = parser.parseGameData(401772913);
 
         PlayService service = new PlayService();
 
         List<Play> explosives = service.getExplosivePlays(plays);
 
-        System.out.println("\n=== Explosive Plays ===");
+        System.out.println("\n=== Explosive Plays for Week" + 16 + " ===");
         for (Play play : explosives) {
             System.out.println(play);
         }
@@ -89,20 +89,6 @@ public class Main {
         service.printRanking(service.countExplosives(explosives, "RECEIVING"));
 
         System.out.println("\n=== Rushing ===");
-        service.printRanking(service.countExplosives(explosives, "RUSHING"));*/
-    }
-
-    static Map<String, TeamStats> parseStats(String filename) throws Exception {
-        Map<String, TeamStats> results = new LinkedHashMap<>();
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] parts = line.split(",");
-            results.put(parts[0], new TeamStats(parts[1], parts[2], Integer.parseInt(parts[3]), Integer.parseInt(parts[4])));
-        }
-        br.close();
-
-        return results;
+        service.printRanking(service.countExplosives(explosives, "RUSHING"));
     }
 }
