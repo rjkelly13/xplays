@@ -158,7 +158,7 @@ public class EspnParser {
 
             if (playType.equals("RUSH") || (playType.equals("TD") && !p.contains(" pass ") && !p.contains(" punts "))) {
                 players[1] = null;
-            } else if (playType.equals("REC") || (playType.equals("TD") && p.contains(" pass ") && !p.contains(" punts " ))) {
+            } else if (playType.equals("REC") || playType.equals("PASS") || (playType.equals("TD") && p.contains(" pass ") && !p.contains(" punts " ))) {
                 players[1] = p.contains("reported") ? players2.get(2) : players2.get(1);
             }
         }
@@ -174,6 +174,8 @@ public class EspnParser {
                 else
                     return "RUSH";   
             }
+        } else if (playType.equals("PASS")) {
+            return "REC";
         }
         return playType;
     }
